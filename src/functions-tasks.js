@@ -18,7 +18,7 @@
  *
  */
 function getCurrentFunctionName() {
-  throw new Error('Not implemented');
+  return getCurrentFunctionName.name;
 }
 
 /**
@@ -50,8 +50,8 @@ function getFunctionBody(/* func */) {
  *  ]) => [0, 1, 2]
  *
  */
-function getArgumentsCount(/* funcs */) {
-  throw new Error('Not implemented');
+function getArgumentsCount(funcs) {
+  return funcs.map((func) => func.length);
 }
 
 /**
@@ -70,8 +70,10 @@ function getArgumentsCount(/* funcs */) {
  *   power05(16) => 4
  *
  */
-function getPowerFunction(/* exponent */) {
-  throw new Error('Not implemented');
+function getPowerFunction(exponent) {
+  return function powerFunction(x) {
+    return x ** exponent;
+  };
 }
 
 /**
@@ -105,8 +107,16 @@ function getPolynom() {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+function memoize(func) {
+  const cache = {};
+
+  return function internalFunc(...args) {
+    const key = JSON.stringify(args);
+    if (!(key in cache)) {
+      cache[key] = func(...args);
+    }
+    return cache[key];
+  };
 }
 
 /**
@@ -151,8 +161,19 @@ function retry(/* func, attempts */) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  function logWrapper(...args) {
+    const functionName = func.name || 'anonymous function';
+    const argsString = args.map((arg) => JSON.stringify(arg)).join(',');
+
+    logFunc(`${functionName}(${argsString}) starts`);
+    const result = func(...args);
+    logFunc(`${functionName}(${argsString}) ends`);
+
+    return result;
+  }
+
+  return logWrapper;
 }
 
 /**
@@ -168,8 +189,12 @@ function logger(/* func, logFunc */) {
  *   partialUsingArguments(fn, 'a','b','c')('d') => 'abcd'
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
-function partialUsingArguments(/* fn, ...args1 */) {
-  throw new Error('Not implemented');
+function partialUsingArguments(fn, ...args1) {
+  function partialFunction(...args2) {
+    return fn(...args1, ...args2);
+  }
+
+  return partialFunction;
 }
 
 /**
